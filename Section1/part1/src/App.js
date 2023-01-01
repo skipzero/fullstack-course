@@ -5,7 +5,6 @@ const Header = (props) => {
 }
 
 const Part = (props) => {
-  console.log('part', props)
   return (
     <div>
       <p>{props.part} {props.exercises}</p>
@@ -14,16 +13,11 @@ const Part = (props) => {
 }
 
 const Content = (props) => {
-  const propArr = props.parts.map((prop) => {
-    return (
-      prop.name
-    )
-  })
   return (
     <>
-      <Part part={propArr} exercises={props.exercises1} />
-      <Part part={props.part2} exercises={props.exercises2} />
-      <Part part={props.part3} exercises={props.exercises3} />
+      {props.parts.map((part) => (
+        <Part part={part.name} exercises={part.exercises} key={part.name} />
+      ))}
     </>
   )
 }
@@ -31,7 +25,9 @@ const Content = (props) => {
 const Total = (props) => {
   return (
     <>
-      {props.exercises1 + props.exercises2 + props.exercises3}
+      {props.total.reduce((acc, exercise) => {
+        return acc + exercise.exercises;
+      }, 0)}
     </>
   )
 }
