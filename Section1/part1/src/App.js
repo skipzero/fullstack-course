@@ -20,7 +20,10 @@ const Display = ({value, text}) => {
 
 const Anecdote = ({line, votes}) => {
   return (
-    <p>{line}</p>
+    <div>
+      <p>{line}</p>
+      <p>has {votes} votes</p>
+    </div>
   )
 }
 
