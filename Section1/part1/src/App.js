@@ -1,62 +1,17 @@
 import { useState } from "react"
 
-const App = () => {
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  const [anecdoteLine, setAnecdoteLine] = useState(anecdotes[0])
-  const [votes, setVotes] = useState(0)
-
-  const stats = [good, bad, neutral]
-
-  const getRandom = () => {
-    return Math.random() * (anecdotes.length - 1) + anecdotes.length - 1;
-  }
-
-  const vote = () => {
-    let newVote = [ ...anecdotes ]
-    newVote[0].votes++
-  }
-
-  return (
-    <div>
-      <h1>Give Feedback</h1>
-      <Button handleClick={() => setGood(good + 1)} text="Good" />
-      <Button handleClick={() => setNeutral(neutral + 1)} text="Neutral" />
-      <Button handleClick={() => setBad(bad + 1)} text="Bad" />
-
-      <h1>Statistics</h1>
-        {good === 0 ?
-            <p>No Feedback Given</p> :
-          <>
-            <Statistics stats={stats}/>
-          </>
-        }
-      <div>
-        <Anecdote line={anecdoteLine.line} votes={anecdoteLine.votes}/>
-        <Button handleClick={() => {
-          console.log('ave', anecdoteLine, anecdoteLine.index)
-          return setAnecdoteLine({line: anecdoteLine[getRandom()]})
-        }} 
-        text="Next Anecdote" /> 
-        <Button handleClick={() => vote()} text="Votes"/>
-      </div>
-    </div>
-    
-  )
-}
-
 const Button = ({ handleClick, text }) => <button onClick={handleClick}>{text}</button>
 
 const Statistics = ({stats}) => {
   console.log('stats', stats)
   const sum = stats.reduce((acc, numb) => {
+    console.log('summm', acc, numb)
     acc += numb;
     return acc;
   }, 0)
   const [good, neutral, bad] = stats;
   const percentGood = good / sum;
-  const aveRate = sum / good - bad;
+  const aveRate = good - bad/sum;
   return(
     <table>
       <tbody>
@@ -102,6 +57,54 @@ const anecdotes = lines.map((line, index) => {
   return {line, 'votes':0, index}
 })
 
-console.log(anecdotes)
+const App = () => {
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+
+  const [anecdoteLine, setAnecdoteLine] = useState(anecdotes[0])
+  const [votes, setVotes] = useState(0)
+
+
+  const stats = [good, neutral, bad]
+
+  const getRandom = () => {
+    return Math.floor(Math.random() * lines.length);
+  }
+
+  const test = getRandom();
+
+  const vote = () => {
+    let newVote = [ ...anecdotes ]
+    newVote[0].votes++
+  }
+
+  return (
+    <div>
+      <h1>Give Feedback</h1>
+      <Button handleClick={() => setGood(good + 1)} text="Good" />
+      <Button handleClick={() => setNeutral(neutral + 1)} text="ssNeutral" />
+      <Button handleClick={() => setBad(bad + 1)} text="Bad" />
+
+      <h1>Statistics</h1>
+        {good === 0 ?
+            <p>No Feedback Given</p> :
+          <>
+            <Statistics stats={stats}/>
+          </>
+        }
+      <div>
+        <Anecdote line={anecdoteLine.line} votes={anecdoteLine.votes}/>
+        <Button handleClick={() => {
+          console.log('ave', anecdoteLine, anecdoteLine.index)
+          return setAnecdoteLine({line: anecdoteLine[getRandom()]})
+        }} 
+        text="Next Anecdote" /> 
+        <Button handleClick={() => vote()} text="Votes"/>
+      </div>
+    </div>
+    
+  )
+}
 
 export default App;
