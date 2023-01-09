@@ -12,12 +12,15 @@ const Statistics = ({stats}) => {
   const [good, neutral, bad] = stats;
   const percentGood = good / sum;
   const aveRate = good - bad/sum;
+  const all = good + neutral + bad;
+
   return(
     <table>
       <tbody>
         <StatisticLine text="good" value={good} />
         <StatisticLine text="neutral" value={neutral} />
         <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="All" value={all} />
         <StatisticLine text="Good" value={percentGood} />
         <StatisticLine text="Average" value={aveRate} />
       </tbody>
@@ -53,31 +56,30 @@ const lines = [
   'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
 ]
 
-const anecdotes = lines.map((line, index) => {
-  return {line, 'votes':0, index}
+const anecdotes = lines.map((line) => {
+  return {line, 'votes':0}
 })
+
+const getLine = (array) => {
+  const newLine = array[Math.floor(Math.random() * lines.length)];
+  return newLine;
+}
 
 const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+  const [bad, setBad] = useState(0);
 
-  const [anecdoteLine, setAnecdoteLine] = useState(anecdotes[0])
-  const [votes, setVotes] = useState(0)
+  const addVote = (lineVotes) => {
+    console.log('setVotes', lineVotes)
+    let newVote = lineVotes + 1
+    setVotes(votes + 1);
+  }
 
+  const [anecdoteLine, setAnecdoteLine] = useState(() => getLine(anecdotes))
+  const [votes, setVotes] = useState(anecdoteLine.votes);
 
   const stats = [good, neutral, bad]
-
-  const getRandom = () => {
-    return Math.floor(Math.random() * lines.length);
-  }
-
-  const test = getRandom();
-
-  const vote = () => {
-    let newVote = [ ...anecdotes ]
-    newVote[0].votes++
-  }
 
   return (
     <div>
@@ -94,13 +96,14 @@ const App = () => {
           </>
         }
       <div>
-        <Anecdote line={anecdoteLine.line} votes={anecdoteLine.votes}/>
+        <h1>Anecdotes</h1>
+        <Anecdote line={anecdoteLine.line} votes={votes}/>
         <Button handleClick={() => {
-          console.log('ave', anecdoteLine, anecdoteLine.index)
-          return setAnecdoteLine({line: anecdoteLine[getRandom()]})
+          console.log('ave', anecdoteLine, anecdoteLine.voptes)
+          setAnecdoteLine(getLine(anecdotes))
         }} 
         text="Next Anecdote" /> 
-        <Button handleClick={() => vote()} text="Votes"/>
+        <Button handleClick={() => addVote(anecdoteLine)} text="Votes"/>
       </div>
     </div>
     
