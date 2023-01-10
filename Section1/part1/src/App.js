@@ -70,16 +70,32 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0);
 
-  const addVote = (lineVotes) => {
-    console.log('setVotes', lineVotes)
-    let newVote = lineVotes + 1
-    setVotes(votes + 1);
+  const [lineArr, setLineArr] = useState(anecdotes)
+
+  const addVote = (currLine) => {
+    const newState = lineArr.map(obj => {
+      if (obj.line === currLine.line) {
+        return {...obj, votes: currLine.votes += 1}
+      }
+      return obj;
+    });
+    setLineArr(newState)
   }
 
-  const [anecdoteLine, setAnecdoteLine] = useState(() => getLine(anecdotes))
-  const [votes, setVotes] = useState(anecdoteLine.votes);
+  const [anecdoteLine, setAnecdoteLine] = useState(() => getLine(lineArr))
 
   const stats = [good, neutral, bad]
+
+  const getTopAnecdote = (array) => {
+    const sortingArr = [...lineArr]
+    sortingArr.sort((a,b) => {
+      if (a.votes > b.votes) return -1
+      if (a.votes < b.votes) return 1
+      return 0
+    })
+    console.log('topp',sortingArr)
+    return sortingArr[0]
+  }
 
   return (
     <div>
@@ -97,7 +113,7 @@ const App = () => {
         }
       <div>
         <h1>Anecdotes</h1>
-        <Anecdote line={anecdoteLine.line} votes={votes}/>
+        <Anecdote line={anecdoteLine.line} votes={anecdoteLine.votes}/>
         <Button handleClick={() => {
           console.log('ave', anecdoteLine, anecdoteLine.voptes)
           setAnecdoteLine(getLine(anecdotes))
@@ -105,6 +121,8 @@ const App = () => {
         text="Next Anecdote" /> 
         <Button handleClick={() => addVote(anecdoteLine)} text="Votes"/>
       </div>
+      <h1>Top Voted Anecdote</h1>
+      {getTopAnecdote(lineArr).line}
     </div>
     
   )
