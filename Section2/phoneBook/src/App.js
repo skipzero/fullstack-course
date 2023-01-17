@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Axios from 'axios';
 
 import Form from './components/Form/';
 import Person from './components/Person/'
@@ -12,6 +13,11 @@ const Filter = ({filter, onChange}) => {
 }
 
 const App = () => {
+
+  useEffect(() => {
+    Axios.get('http://localhost:3001/persons')
+    .then(res => setPersons(res.data))}, [])
+
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas',
       number: '334-3344',
