@@ -1,7 +1,6 @@
 import Course from './components/Courses/'
 
 const App = () => {
-  console.log('COURSE', <Course />)
   const courses = [
     {
       name: "Half Stack application development",
@@ -51,7 +50,6 @@ const App = () => {
     <div>
       <h1>Web Development Curriculum</h1>
       {courses.map(({id, name, parts}) => {
-        console.log('course', id, name, parts)
         return <Course key={id} name={name} parts={parts} />
       })}
     </div>
