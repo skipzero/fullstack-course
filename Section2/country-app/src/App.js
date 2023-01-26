@@ -1,25 +1,97 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 
-const Filter = ({onChange, filter}) => {
+import './App.css';
+
+const Filter = ({filter, filterBy}) => {
   
   return (
     <div>
-      <label>Find Countries: <input onChange={onChange} value={filter}/></label>
+      <label>Find Countries: <input onChange={filterBy} value={filter}/></label>
     </div>
   )
 }
 
-const Country = ({url, name}) => {
+const Country = ({search, countries}) => {
+
   return (
-    <li>
-      <span><a href={`${url}name/${name}`}>{name}</a> </span>
-    </li>
+    <ul>
+      {search.query === '' ?
+        countries.map(country => {
+          return <li key={country.name.common} >
+            {country.name.common}
+          </li>
+        })
+        : search.list.map(country => {
+          console.log('lists',search, country);
+          return <li key={country.name.common}>
+            {country.name.common}
+          </li>
+        })}
+    </ul>
   )
+}
+
+const Weather = (props) => {
+ console.log('Weather Pros', props)
+ const name = props.name.common;
+ const {weather, wind, main} = props.weather;
+ const weatherUrl = `http://openweathermap.org/img/wn/${weather[0].icon}@2x.png`
+    return <>
+    <h2>Weather in {name}</h2>
+    <div><strong>Temprature: {main.temp} ℃</strong> </div>
+    <img src={weatherUrl} alt={weather[0].description} className='weather-icon'/> 
+    <div><strong>Wind Speed: {wind.speed} m/s</strong></div>
+  </>
+}
+
+const SingleCountry = (props) => {
+  const [weatherData, setWeatherData] = useState({})
+  const [loading, setLoading] = useState(true)
+
+  const {capital, area, languages, flags, name, capitalInfo} = props.country;
+  const [lat, lon] = capitalInfo.latlng;
+  const apiKey = process.env.REACT_APP_OWOC_KEY;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+  console.log('single', lat, lon, apiKey)
+  useEffect(() => {
+    axios.get(url)
+      .then(res => {
+        setWeatherData(res.data)
+        setLoading(false)
+      })
+  },[url])
+  return <>
+    <h1>{name.common}</h1>
+    <div>Capital: {capital}</div>
+    <div>Area: {area}</div>
+    <div>
+      Languages:
+      <ul>
+        {Object.keys(languages).map(lang => {
+          return <li key={lang}>
+            {languages[lang]}
+          </li>
+        })}
+      </ul>
+      <img src={flags.png} alt={name.common} className='flag'/>
+      {loading ?
+        <>
+          'Weather loading'
+        </> :
+        <>
+          <Weather weather={weatherData} name={name} />
+        </>}
+    </div>
+  </>
 }
 
 function App() {
   const [filter, setFilter] = useState('');
+  const [query, setQuery] = useState({
+    query: '',
+    list: []
+  })
   const [countries, setCountries] = useState([])
 
   const baseUrl = 'https://restcountries.com/v3.1/'
@@ -30,24 +102,34 @@ function App() {
       .then(res => {
         setCountries(res.data);
       })
-      .then(res => {
-        console.log(countries)
-      })
   },[]);
 
-  const onChange = () => {
-    return;
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value)
+
+    const results = countries.filter(country => {
+      if (event.target.value === '') return countries
+      return country.name.common.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    console.log('filet', results, query)
+    setQuery({
+      query: event.target.value,
+      list: results
+    })
   }
 
-  console.log('countries', countries)
+  // console.log('countries', countries)
   return (
     <div className="App">
-      <Filter value={filter} onChange={onChange}/>
-      {/* {countries.length > 10 ?
-      'Too many matches, please add more characters' : */
-      countries.map((country) => {
-        return <Country name={country.name.common} url={baseUrl} />       
-      })}
+      <Filter value={filter} filterBy={handleFilterChange}/>
+      {query.list.length === 1 ?
+        <SingleCountry country={query.list[0]} /> :
+      query.list.length < 10 && query.list.length > 0 ?
+        // query.list.map((country) => {
+         <Country search={query} />       
+       :
+      'Too many matches, please add more characters'
+    }
     </div>
   );
 }

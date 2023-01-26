@@ -1,0 +1,13 @@
+ul li {
+  list-style: none;
+}
+
+img.flag {
+  height: 320px;
+  width: 320px;
+}
+
+img.icon-weather {
+  height: 128px;
+  width: 128px;
+}

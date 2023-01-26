@@ -1,0 +1,28 @@
+html, body {
+  font-size: 10px;
+}
+
+h1 {
+  color: green;
+  font-size: 4rem;
+}
+
+#root {
+  font-size: 1.5rem;
+}
+
+.notifications {
+  height: 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+.success {
+  border: 1px solid #00ff00;
+  color: #00ff00
+}
+
+.error {
+  border: 1px solid #ff0000;
+  color: #ff0000;
+}

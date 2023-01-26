@@ -4,6 +4,7 @@ import Form from './components/Form/';
 import Person from './components/Person/'
 import Filter from './components/Filter/'
 import phoneServices from './services/phonebook'
+import Notification from './components/Notification/';
 const App = () => {
 
   const [persons, setPersons] = useState([
@@ -14,6 +15,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterBy, setFilterBy] = useState('')
+  const [message, setMessage] = useState({text:'', status: null})
 
   useEffect(() => {
     phoneServices
@@ -21,6 +23,13 @@ const App = () => {
       .then(res => {
         console.log('useEffect', res)
         setPersons(res)
+      })
+      .catch(err => {
+        console.error(`ERROR: ${err.message} occurred while loading entries`)
+        setMessage({text: `ERROR: ${err.message} occurred while loading entries.`, status: 'error'})
+        setTimeout(() => {
+          setMessage({text: '', status: null})
+        }, 2500)
       })
     }, [])
 
@@ -47,9 +56,14 @@ const App = () => {
       phoneServices
         .create(personObj)
         .then(res => {
+          console.log('create', res)
           setPersons(res.concat(personObj))
+          setMessage({text: `${newName} was successfully added!`, status: 'success'})
           setNewName('')
           setNewNumber('')
+          setTimeout(() => {
+            setMessage({text: '', status: null})
+          }, 2500)
         })
     } else if (window.confirm(`${newName} already exists, would you like to update the phone number?`)) {
       const id = testPerson[0].id
@@ -66,6 +80,10 @@ const App = () => {
         })
         .catch(err => {
           console.error(`ERROR: ${err.message} occurred in updating number`)
+          setMessage({text: `An error occurred when adding ${newName}`, status: 'error'})
+          setTimeout(() => {
+            setMessage({text: '', status: null})
+          }, 2500)
         })
     }
   }
@@ -74,7 +92,19 @@ const App = () => {
     phoneServices
       .remove(id)
       .then(res => {
+        const deletedPerson = persons.filter(person => id === person.id)
         setPersons(persons.filter(person => id !== person.id))
+        setMessage({text:`${deletedPerson} has been added`, status: 'success'})
+        setTimeout(() => {
+          setMessage({text: '', status: null})
+        }, 2500)
+      })
+      .catch(err => {
+        console.error(`ERROR: ${err.message} occurred while deleting`)
+        setMessage({text: 'User already deleted', status: 'error'})
+        setTimeout(() => {
+          setMessage({text: '', status: null})
+        }, 2500)
       })
   }
 
@@ -91,6 +121,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message.text} status={message.status} />
       <Filter onChange={handleFilter} filter={filterBy}/>
       <Form addPerson={addPerson}
       handleNameChange={handleNameChange}
