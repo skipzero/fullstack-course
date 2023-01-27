@@ -7,12 +7,12 @@ const Filter = ({filter, filterBy}) => {
   
   return (
     <div>
-      <label>Find Countries: <input onChange={filterBy} value={filter}/></label>
+      <label>Find Countries: <input onChange={filterBy} value={filter} id='filter' /></label>
     </div>
   )
 }
 
-const Country = ({search, countries}) => {
+const Country = ({search, countries, filterBy}) => {
 
   return (
     <ul>
@@ -25,7 +25,7 @@ const Country = ({search, countries}) => {
         : search.list.map(country => {
           console.log('lists',search, country);
           return <li key={country.name.common}>
-            {country.name.common}
+            {country.name.common} <button onClick={() => filterBy(country.name.common)}>Show</button>
           </li>
         })}
     </ul>
@@ -34,13 +34,13 @@ const Country = ({search, countries}) => {
 
 const Weather = (props) => {
  console.log('Weather Pros', props)
- const name = props.name.common;
+ const name = props.name;
  const {weather, wind, main} = props.weather;
  const weatherUrl = `http://openweathermap.org/img/wn/${weather[0].icon}@2x.png`
     return <>
     <h2>Weather in {name}</h2>
     <div><strong>Temprature: {main.temp} ℃</strong> </div>
-    <img src={weatherUrl} alt={weather[0].description} className='weather-icon'/> 
+    <img src={weatherUrl} alt={weather[0].description} title={weather[0].description} className='weather-icon'/> 
     <div><strong>Wind Speed: {wind.speed} m/s</strong></div>
   </>
 }
@@ -48,7 +48,7 @@ const Weather = (props) => {
 const SingleCountry = (props) => {
   const [weatherData, setWeatherData] = useState({})
   const [loading, setLoading] = useState(true)
-
+  console.log('SingleCount', props)
   const {capital, area, languages, flags, name, capitalInfo} = props.country;
   const [lat, lon] = capitalInfo.latlng;
   const apiKey = process.env.REACT_APP_OWOC_KEY;
@@ -74,13 +74,13 @@ const SingleCountry = (props) => {
           </li>
         })}
       </ul>
-      <img src={flags.png} alt={name.common} className='flag'/>
+      <img src={flags.png} alt={name.common} title={name.common} className='flag'/>
       {loading ?
         <>
           'Weather loading'
         </> :
         <>
-          <Weather weather={weatherData} name={name} />
+          <Weather weather={weatherData} name={capital[0]} />
         </>}
     </div>
   </>
@@ -105,15 +105,21 @@ function App() {
   },[]);
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value)
+    let target;
+    if (event.target) {
+      target = event.target.value;
+    } else {
+      target = event;
+    }
+    setFilter(target)
 
     const results = countries.filter(country => {
-      if (event.target.value === '') return countries
-      return country.name.common.toLowerCase().includes(event.target.value.toLowerCase())
+      if (target === '') return countries
+      return country.name.common.toLowerCase().includes(target.toLowerCase())
     })
     console.log('filet', results, query)
     setQuery({
-      query: event.target.value,
+      query: target,
       list: results
     })
   }
@@ -122,11 +128,14 @@ function App() {
   return (
     <div className="App">
       <Filter value={filter} filterBy={handleFilterChange}/>
+
       {query.list.length === 1 ?
         <SingleCountry country={query.list[0]} /> :
-      query.list.length < 10 && query.list.length > 0 ?
+      query.list.length <= 10 && query.list.length > 0 ?
         // query.list.map((country) => {
-         <Country search={query} />       
+          <>
+            <Country search={query} filterBy={handleFilterChange} />
+          </>
        :
       'Too many matches, please add more characters'
     }
