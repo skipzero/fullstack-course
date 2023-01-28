@@ -7,14 +7,18 @@ import phoneServices from './services/phonebook'
 import Notification from './components/Notification/';
 const App = () => {
 
-  const [persons, setPersons] = useState([
+  const [people, setPeople] = useState([
     { name: 'Arto Hellas',
       number: '334-3344',
     }
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [filterBy, setFilterBy] = useState('')
+  const [filter, setFilter] = useState('')
+  const [query, setQuery] = useState({
+    search: '',
+    list: []
+  })
   const [message, setMessage] = useState({text:'', status: null})
 
   useEffect(() => {
@@ -22,7 +26,11 @@ const App = () => {
       .getAll()
       .then(res => {
         console.log('useEffect', res)
-        setPersons(res)
+        setPeople(res)
+        setQuery({
+          query: '',
+          list: res
+        })
       })
       .catch(err => {
         console.error(`ERROR: ${err.message} occurred while loading entries`)
@@ -46,18 +54,18 @@ const App = () => {
 
   const addPerson = (e) => {
     e.preventDefault();
-    const testPerson = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase());
+    const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase());
     const personObj = {
       name: newName,
       number: newNumber,
     }
-    if (testPerson.length === 0) {
 
+    if (testPerson.length === 0) {
       phoneServices
         .create(personObj)
         .then(res => {
           console.log('create', res)
-          setPersons(res.concat(personObj))
+          setPeople(res.concat(personObj))
           setMessage({text: `${newName} was successfully added!`, status: 'success'})
           setNewName('')
           setNewNumber('')
@@ -70,7 +78,7 @@ const App = () => {
       phoneServices
         .update(id, personObj)
         .then(res => {
-          setPersons(persons.map(person => {
+          setPeople(people.map(person => {
             if (person.id !== id) {
               return person;
             } else {
@@ -92,8 +100,8 @@ const App = () => {
     phoneServices
       .remove(id)
       .then(res => {
-        const deletedPerson = persons.filter(person => id === person.id)
-        setPersons(persons.filter(person => id !== person.id))
+        const deletedPerson = people.filter(person => id === person.id)
+        setPeople(people.filter(person => id !== person.id))
         setMessage({text:`${deletedPerson} has been added`, status: 'success'})
         setTimeout(() => {
           setMessage({text: '', status: null})
@@ -108,21 +116,33 @@ const App = () => {
       })
   }
 
-  const handleFilter = (e) => {
-    const filterName = e.target.value;
-    const filteredArray = () => {
-      const filteringArr = [...persons]
-      return filteringArr.filter((el) => el.name.toLowerCase().includes(filterName.toLowerCase()));
+  const handleFilter = (event) => {
+    console.log('Event', event)
+    let targetFilter;
+    if (event.target) {
+      targetFilter = event.target.value;
+    } else {
+      targetFilter = event;
     }
-    setFilterBy(filterName)
-    setPersons(filteredArray)
+    
+    setFilter(targetFilter);
+    
+    const results = people.filter(person => {
+      console.log('++++', person)
+      if (targetFilter === '') return people;
+      return person.name.toLowerCase().includes(targetFilter.toLowerCase())
+    });
+    setQuery({
+      query: targetFilter,
+      list: results
+    });
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
       <Notification message={message.text} status={message.status} />
-      <Filter onChange={handleFilter} filter={filterBy}/>
+      <Filter handleFilter={handleFilter} value={filter}/>
       <Form addPerson={addPerson}
       handleNameChange={handleNameChange}
       handleNumberChange={handleNumberChange}
@@ -132,8 +152,7 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {
-        persons.map(({name, number, id}) => {
-          console.log('person', persons, name)
+        query.list.map(({name, number, id}) => {
             return (
             <li key={name}>
               <Person name={name} number={number} id={id} deletePerson={deletePerson}/>

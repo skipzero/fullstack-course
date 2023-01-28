@@ -1,9 +1,9 @@
 
-const Filter = ({filter, filterBy}) => {
+const Filter = ({filter, handleFilter}) => {
 
   return (
     <>
-      <label>Filter<input value={filter} onChange={filterBy}/></label>
+      <label>Filter<input value={filter} onChange={handleFilter}/></label>
     </>
   )
 }
