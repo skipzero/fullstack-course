@@ -19,7 +19,19 @@ const App = () => {
     search: '',
     list: []
   })
-  const [message, setMessage] = useState({text:'', status: null})
+  const [message, setMessage] = useState({
+    text:'',
+    status: ''
+  })
+
+  const stopNotification = () => {
+    setTimeout(() => {
+      setMessage({
+        text: '',
+        status: ''
+      })
+    }, 3000)
+  }
 
   useEffect(() => {
     phoneServices
@@ -31,32 +43,35 @@ const App = () => {
           query: '',
           list: res
         })
-      })
+        return res
+      }).then((res) => console.log('fetch', res))
       .catch(err => {
         console.error(`ERROR: ${err.message} occurred while loading entries`)
-        setMessage({text: `ERROR: ${err.message} occurred while loading entries.`, status: 'error'})
-        setTimeout(() => {
-          setMessage({text: '', status: null})
-        }, 2500)
+        setMessage({
+          text: `ERROR: ${err.message} occurred while loading entries.`,
+          status: 'error show'
+        })
+        stopNotification();
       })
     }, [])
 
   const handleNameChange = (e) => {
-    console.log('Target', e)
-    setNewName(e.target.value)
+    const val = e.target.value;
+    console.log('Target', val)
+    setNewName(val)
   }
 
   const handleNumberChange = (e) => {
-    console.log('numb', e.target)
-    setNewNumber(e.target.value)
+    const val = e.target.value;
+    setNewNumber(val)
 
   }
 
   const addPerson = (e) => {
     e.preventDefault();
-    const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase());
+    const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase().trim());
     const personObj = {
-      name: newName,
+      name: newName.trim(),
       number: newNumber,
     }
 
@@ -65,13 +80,18 @@ const App = () => {
         .create(personObj)
         .then(res => {
           console.log('create', res)
-          setPeople(res.concat(personObj))
-          setMessage({text: `${newName} was successfully added!`, status: 'success'})
+          setPeople(query.list.concat(personObj))
+          setQuery({
+            query: '',
+            list: people.concat(personObj)
+          })
+          setMessage({
+            text: `${newName} was successfully added!`,
+            status: 'success show'
+          })
+          stopNotification();
           setNewName('')
           setNewNumber('')
-          setTimeout(() => {
-            setMessage({text: '', status: null})
-          }, 2500)
         })
     } else if (window.confirm(`${newName} already exists, would you like to update the phone number?`)) {
       const id = testPerson[0].id
@@ -85,13 +105,26 @@ const App = () => {
               return res;
             }
           }))
+          // setQuery(people.map(person => {
+          //   if (person.id !== id) {
+          //     return person;
+          //   } else {
+          //     return res;
+          //   }
+          // }))
+          setMessage({
+            text: `${newName} has been updated.`,
+            status: 'success show'
+          })
+          stopNotification()
         })
         .catch(err => {
           console.error(`ERROR: ${err.message} occurred in updating number`)
-          setMessage({text: `An error occurred when adding ${newName}`, status: 'error'})
-          setTimeout(() => {
-            setMessage({text: '', status: null})
-          }, 2500)
+          setMessage({
+            text: `An error occurred when adding ${newName}`,
+            status: 'error show'
+          })
+          stopNotification()
         })
     }
   }
@@ -102,22 +135,27 @@ const App = () => {
       .then(res => {
         const deletedPerson = people.filter(person => id === person.id)
         setPeople(people.filter(person => id !== person.id))
-        setMessage({text:`${deletedPerson} has been added`, status: 'success'})
-        setTimeout(() => {
-          setMessage({text: '', status: null})
-        }, 2500)
+        setQuery({
+          query: '',
+          list: people.filter(person => id !== person.id)
+        })
+        setMessage({
+          text:`${deletedPerson} has been deleted`, 
+          status: 'success show'
+        })
+        stopNotification()
       })
       .catch(err => {
         console.error(`ERROR: ${err.message} occurred while deleting`)
-        setMessage({text: 'User already deleted', status: 'error'})
-        setTimeout(() => {
-          setMessage({text: '', status: null})
-        }, 2500)
+        setMessage({
+          text: 'User already deleted',
+          status: 'error show'
+        })
+        stopNotification()
       })
   }
 
   const handleFilter = (event) => {
-    console.log('Event', event)
     let targetFilter;
     if (event.target) {
       targetFilter = event.target.value;
@@ -128,7 +166,6 @@ const App = () => {
     setFilter(targetFilter);
     
     const results = people.filter(person => {
-      console.log('++++', person)
       if (targetFilter === '') return people;
       return person.name.toLowerCase().includes(targetFilter.toLowerCase())
     });
@@ -141,7 +178,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={message.text} status={message.status} />
+      <Notification text={message.text} status={message.status} setMessage={setMessage} />
       <Filter handleFilter={handleFilter} value={filter}/>
       <Form addPerson={addPerson}
       handleNameChange={handleNameChange}
@@ -152,7 +189,8 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {
-        query.list.map(({name, number, id}) => {
+          console.log('return', query.list)} {
+          query.list.map(({name, number, id}) => {
             return (
             <li key={name}>
               <Person name={name} number={number} id={id} deletePerson={deletePerson}/>
