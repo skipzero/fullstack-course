@@ -100,7 +100,6 @@ const App = () => {
         // if record name exists, update record
     } else if (window.confirm(`${newName} already exists, would you like to update the phone number?`)) {
       const id = testPerson[0].id
-      debugger;
       phoneServices
         .update(id, personObj)
         .then(res => {
