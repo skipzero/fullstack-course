@@ -33,6 +33,11 @@ const App = () => {
     }, 3000)
   }
 
+  const reset = () => {
+    setNewName('')
+    setNewNumber('')
+  } 
+
   useEffect(() => {
     phoneServices
       .getAll()
@@ -66,7 +71,7 @@ const App = () => {
     setNewNumber(val)
 
   }
-
+  // add new record
   const addPerson = (e) => {
     e.preventDefault();
     const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase().trim());
@@ -90,28 +95,34 @@ const App = () => {
             status: 'success show'
           })
           stopNotification();
-          setNewName('')
-          setNewNumber('')
+          reset();
         })
+        // if record name exists, update record
     } else if (window.confirm(`${newName} already exists, would you like to update the phone number?`)) {
       const id = testPerson[0].id
+      debugger;
       phoneServices
         .update(id, personObj)
         .then(res => {
-          setPeople(people.map(person => {
-            if (person.id !== id) {
-              return person;
-            } else {
-              return res;
-            }
-          }))
-          // setQuery(people.map(person => {
+          console.log('update', res)
+          // setPeople(people.map(person => {
+          //   console.log('setPpl', person, res)
           //   if (person.id !== id) {
           //     return person;
           //   } else {
           //     return res;
           //   }
           // }))
+          setQuery({
+            query: '',
+            list: query.list.map(person => {
+            if (person.id !== id) {
+              return person;
+            } else {
+              return res;
+            }
+          })})
+          reset();
           setMessage({
             text: `${newName} has been updated.`,
             status: 'success show'
