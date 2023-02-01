@@ -69,7 +69,7 @@ app.get('/api/notes/:id', (request, response) => {
 
 app.delete('/api/notes/:id', (req, res) => {
   const id = parseInt(req.params.id)
-  notes = notes.filter(note => note.id !== id)
+  people = notes.filter(note => note.id !== id)
   res.status(204).end();
 })
 

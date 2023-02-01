@@ -1,0 +1,14 @@
+POST http://localhost:3001/api/people
+Content-Type: application/json
+
+{
+  "important": false,
+  "content": "Jinx is annoying the <beep> out of me RN..."
+}
+
+#####
+
+GET http://localhost:3001/api/people
+
+####
+DELETE http://localhost:3001/api/people/3
