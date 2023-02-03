@@ -55,8 +55,8 @@ app.post('/api/people', (req, res) => {
     if (person.name.toLowerCase() === body.name.toLowerCase()) {
       return res.status(400).json({
         error: 'names must be unique'
-      })
-    }
+      }).end()
+    } 
   })
   const entry = {
     id: id(),
