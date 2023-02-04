@@ -1,0 +1,22 @@
+[
+  { 
+    "id": 1,
+    "content": "here we have a note for the notes",
+    "important": "true"
+  },
+  { 
+    "id": 2,
+    "content":"don't forget this is a note to be noted",
+    "important": "false"
+  },
+  { 
+    "id": 3,
+    "content": "this is a note, again...",
+    "important": "false"
+  },
+  { 
+    "id": 4,
+    "content": "note #4...",
+    "important": "true"
+  }
+]
