@@ -1,5 +1,5 @@
 import axios from 'axios';
-const base_url = 'http://localhost:3001/persons';
+const base_url = 'http://localhost:3001/people';
 
 const getAll = () => {
   const request = axios.get(base_url);
@@ -22,9 +22,11 @@ const remove = id => {
 }
 
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
-export default {
+const services = {
   getAll,
   create,
   update,
   remove,
 }
+
+export default services;

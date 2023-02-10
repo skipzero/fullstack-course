@@ -1,6 +1,6 @@
-# fly.toml file generated for still-pond-9674 on 2023-02-04T09:00:07-08:00
+# fly.toml file generated for purple-frost-888 on 2023-02-07T20:59:25-08:00
 
-app = "still-pond-9674"
+app = "purple-frost-888"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

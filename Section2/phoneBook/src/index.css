@@ -24,11 +24,13 @@ h1 {
 }
 
 .success {
+  background-color: #ccccff;
   border: 1px solid #077507;
   color: #077507;
 }
 
 .error {
+  background-color: #ddd;
   border: 1px solid #be0404;
   color: #be0404;
 }

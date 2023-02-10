@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import Form from './components/Form/';
 import Person from './components/Person/'
 import Filter from './components/Filter/'
-import phoneServices from './services/phonebook'
+import phoneServices from './services/'
 import Notification from './components/Notification/';
 const App = () => {
-
+console.log('SERVOCES', phoneServices)
   const [people, setPeople] = useState([
     { name: 'Arto Hellas',
       number: '334-3344',
@@ -143,6 +143,7 @@ const App = () => {
     phoneServices
       .remove(id)
       .then(res => {
+        console.log('DELETE', res)
         const deletedPerson = people.filter(person => id === person.id)
         setPeople(people.filter(person => id !== person.id))
         setQuery({

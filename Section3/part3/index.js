@@ -19,12 +19,12 @@ app.use(cors()); // CORS Module for cross browser support
 let people = require('./data')
 
 // get all entries
-app.get('/api/people', (req, res) => {
+app.get('/people', (req, res) => {
   res.send(people)
 })
 
 // get a single entry
-app.get('/api/people/:id', (req, res) => {
+app.get('/people/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const person = people.find(person => person.id === id)
   if (person) {
@@ -35,13 +35,25 @@ app.get('/api/people/:id', (req, res) => {
 })
 
 // Add entry
-app.post('/api/people', (req, res) => {
+app.post('/people', (req, res) => {
   const body = req.body;
-
+  console.log('POST', body)
   const id = () => {
-    return Math.floor(Math.random() * 10000)
+    const max = 9999;
+    const getMin = () => {
+      people.sort((a,b) => {
+        a.id > b.id ? 1 : 
+        a.id < b.id ? -1 :
+        0
+      })
+      people.reverse()
+      return people[0].id
+    }
+    const min = getMin();
+    console.log('mib----=', people.reverse(), min)
+    return Math.floor(Math.random() * (max - min + 1) - min)
   }
-
+  
   // Throw error if no name or number sent
   if (!body.name || !body.number) {
     return res.status(400).json({
@@ -57,6 +69,8 @@ app.post('/api/people', (req, res) => {
       }).end()
     } 
   })
+  
+  
   const entry = {
     id: id(),
     name: body.name,
@@ -68,7 +82,7 @@ app.post('/api/people', (req, res) => {
 })
 
 // Delete a single entry by id
-app.delete('/api/people/:id', (req, res) => {
+app.delete('/people/:id', (req, res) => {
   const id = parseInt(req.params.id)
   person = people.filter(person => person.id !== id)
   res.status(204).end();
@@ -81,8 +95,7 @@ app.get('/info', (req, res) =>{
   res.send(`Phonebood has entries for ${entries} people <br> ${new Date()}`)
 })
 
-
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
