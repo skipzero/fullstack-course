@@ -1,5 +1,5 @@
 import axios from 'axios';
-const base_url = 'http://localhost:3001/people';
+const base_url = 'http://localhost:3001/api/people';
 
 const getAll = () => {
   const request = axios.get(base_url);
@@ -13,6 +13,7 @@ const create = newObj => {
 
 const update = (id, newObj) => {
   const request = axios.put(`${base_url}/${id}`, newObj)
+  debugger
   return request.then(res => res.data)
 }
 
@@ -21,7 +22,6 @@ const remove = id => {
   return request.then(res => res.data)
 }
 
-/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 const services = {
   getAll,
   create,

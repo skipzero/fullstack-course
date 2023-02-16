@@ -5,20 +5,19 @@ import Person from './components/Person/'
 import Filter from './components/Filter/'
 import phoneServices from './services/'
 import Notification from './components/Notification/';
+
+
 const App = () => {
-console.log('SERVOCES', phoneServices)
   const [people, setPeople] = useState([
     { name: 'Arto Hellas',
       number: '334-3344',
     }
   ])
+
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [query, setQuery] = useState({
-    search: '',
-    list: []
-  })
+  const [list, setList] = useState([])
   const [message, setMessage] = useState({
     text:'',
     status: ''
@@ -44,10 +43,7 @@ console.log('SERVOCES', phoneServices)
       .then(res => {
         console.log('useEffect', res)
         setPeople(res)
-        setQuery({
-          query: '',
-          list: res
-        })
+        setList(res)
         return res
       }).then((res) => console.log('fetch', res))
       .catch(err => {
@@ -76,7 +72,7 @@ console.log('SERVOCES', phoneServices)
     e.preventDefault();
     const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase().trim());
     const personObj = {
-      name: newName.trim(),
+      name: newName,
       number: newNumber,
     }
 
@@ -85,11 +81,8 @@ console.log('SERVOCES', phoneServices)
         .create(personObj)
         .then(res => {
           console.log('create', res)
-          setPeople(query.list.concat(personObj))
-          setQuery({
-            query: '',
-            list: people.concat(personObj)
-          })
+          setPeople(people.concat(personObj))
+          setList(list.concat(personObj))
           setMessage({
             text: `${newName} was successfully added!`,
             status: 'success show'
@@ -103,24 +96,21 @@ console.log('SERVOCES', phoneServices)
       phoneServices
         .update(id, personObj)
         .then(res => {
-          console.log('update', res)
-          // setPeople(people.map(person => {
-          //   console.log('setPpl', person, res)
-          //   if (person.id !== id) {
-          //     return person;
-          //   } else {
-          //     return res;
-          //   }
-          // }))
-          setQuery({
-            query: '',
-            list: query.list.map(person => {
+          setList(list.map(person => {
+            debugger
             if (person.id !== id) {
               return person;
             } else {
               return res;
             }
-          })})
+          }))
+          setPeople(list.map(person => {
+            if (person.id !== id) {
+              return person;
+            } else {
+              return res;
+            }
+          }))
           reset();
           setMessage({
             text: `${newName} has been updated.`,
@@ -139,19 +129,18 @@ console.log('SERVOCES', phoneServices)
     }
   }
 
-  const deletePerson = id => {
+  const deletedPerson = id => {
     phoneServices
       .remove(id)
       .then(res => {
-        console.log('DELETE', res)
+        console.log('DELETE', id, res)
         const deletedPerson = people.filter(person => id === person.id)
-        setPeople(people.filter(person => id !== person.id))
-        setQuery({
-          query: '',
-          list: people.filter(person => id !== person.id)
-        })
+
+        // setPeople(people.filter(person => id !== person.id))
+        setList(list.filter(person => id !== person.id))
+        console.log('DELETED', deletedPerson[0])
         setMessage({
-          text:`${deletedPerson} has been deleted`, 
+          text:`${deletedPerson[0].name} has been deleted`, 
           status: 'success show'
         })
         stopNotification()
@@ -180,10 +169,7 @@ console.log('SERVOCES', phoneServices)
       if (targetFilter === '') return people;
       return person.name.toLowerCase().includes(targetFilter.toLowerCase())
     });
-    setQuery({
-      query: targetFilter,
-      list: results
-    });
+    setList(results)
   }
 
   return (
@@ -199,15 +185,15 @@ console.log('SERVOCES', phoneServices)
       />
       <h2>Numbers</h2>
       <ul>
-        {
-          console.log('return', query.list)} {
-          query.list.map(({name, number, id}) => {
+        { 
+          list.map(({name, number, id}) => {
             return (
             <li key={name}>
-              <Person name={name} number={number} id={id} deletePerson={deletePerson}/>
+              <Person name={name} number={number} id={id} deletedPerson={deletedPerson}/>
             </li>
             )
-          })}
+          })
+        }
       </ul>
     </div>
   )

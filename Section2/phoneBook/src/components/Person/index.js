@@ -1,5 +1,5 @@
-const Person = ({name, number, id, deletePerson}) => {
-    return <div>{name} {number} <button onClick={() => window.confirm(`delete ${name}`) ? deletePerson(id) : ''}>delete</button></div>
+const Person = ({name, number, id, deletedPerson}) => {
+    return <div>{name} {number} <button onClick={() => window.confirm(`delete ${name}`) ? deletedPerson(id) : ''}>delete</button></div>
 }
 
 export default Person;

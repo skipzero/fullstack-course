@@ -23,9 +23,18 @@ let notes = [
   }
 ]
 
+const logger = (req, res, next) => {
+  console.log('Method',. req.method)
+  console.log('Path',. req.path)
+  console.log('Body',. req.body)
+  console.log('======')
+  next()
+}
+
 app.use(express.json())
 app.use(cors())
 app.use(express.static('build'))
+app.use(logger)
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
