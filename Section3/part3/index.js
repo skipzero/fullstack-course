@@ -32,12 +32,12 @@ app.use(logger); // our own homespun midedleware for logging...
 let people = require('./data')
 
 // get all entries
-app.get('/api/people', (req, res) => {
+app.get('/api/persons', (req, res) => {
   res.json(people)
 })
 
 // get a single entry
-app.get('/api/people/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const person = people.find(person => person.id === id)
   if (person) {
@@ -48,29 +48,29 @@ app.get('/api/people/:id', (req, res) => {
 })
 
 // update entry
-app.put('api/people/:id', (req, res) => {
-  const id = parseInt(req.param.id);
-  const body = req.body;
-  console.log('PUPTT', id, body)
-  debugger;
-  people = people.map((person) => {
-    if (person.id !== id) {
-      return person;
-    } else {
-      body.id = id;
-      return body
-    }
-  })
-  if (body.name) {
-    console.log('body', body)
-  }
-})
+// app.put('api/people/:id', (req, res) => {
+//   const id = parseInt(req.param.id);
+//   const body = req.body;
+//   console.log('PUPTT', id, body)
+//   debugger;
+//   people = people.map((person) => {
+//     if (person.id !== id) {
+//       return person;
+//     } else {
+//       body.id = id;
+//       return body
+//     }
+//   })
+//   if (body.name) {
+//     console.log('body', body)
+//   }
+// })
 
 // Add entry
-app.post('/api/people', (req, res) => {
+app.post('/api/persons', (req, res) => {
   const body = req.body;
   console.log('POST', body)
-  
+  debugger
   // Throw error if no name or number sent
   if (!body.name || !body.number) {
     return res.status(400).json({
@@ -100,7 +100,7 @@ app.post('/api/people', (req, res) => {
 })
 
 // Delete a single entry by id
-app.delete('/api/people/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res) => {
   const id = parseInt(req.params.id)
   people = people.filter(person => person.id !== id)
   res.status(204).end();
@@ -112,7 +112,7 @@ app.get('/info', (req, res, next) =>{
   res.send(`Phonebood has entries for ${entries} people <br> ${new Date()}`)
 })
 
-// out middleware to catch any rtoutes user tries to hit that don't exist
+// our middleware to catch any rtoutes user tries to hit that don't exist
 app.use(unknownEndpoint)
 
 

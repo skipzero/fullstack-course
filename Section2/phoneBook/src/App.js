@@ -23,18 +23,15 @@ const App = () => {
     status: ''
   })
 
-  const stopNotification = () => {
+  const reset = () => {
+    setNewName('')
+    setNewNumber('')
     setTimeout(() => {
       setMessage({
         text: '',
         status: ''
       })
     }, 3000)
-  }
-
-  const reset = () => {
-    setNewName('')
-    setNewNumber('')
   } 
 
   useEffect(() => {
@@ -52,25 +49,25 @@ const App = () => {
           text: `ERROR: ${err.message} occurred while loading entries.`,
           status: 'error show'
         })
-        stopNotification();
+        reset();
       })
     }, [])
 
   const handleNameChange = (e) => {
     const val = e.target.value;
     console.log('Target', val)
-    setNewName(val)
+    setNewName(val.trim())
   }
 
   const handleNumberChange = (e) => {
     const val = e.target.value;
     setNewNumber(val)
-
   }
+
   // add new record
   const addPerson = (e) => {
     e.preventDefault();
-    const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase().trim());
+    const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase());
     const personObj = {
       name: newName,
       number: newNumber,
@@ -87,46 +84,52 @@ const App = () => {
             text: `${newName} was successfully added!`,
             status: 'success show'
           })
-          stopNotification();
           reset();
         })
-        // if record name exists, update record
-    } else if (window.confirm(`${newName} already exists, would you like to update the phone number?`)) {
-      const id = testPerson[0].id
-      phoneServices
-        .update(id, personObj)
-        .then(res => {
-          setList(list.map(person => {
-            debugger
-            if (person.id !== id) {
-              return person;
-            } else {
-              return res;
-            }
-          }))
-          setPeople(list.map(person => {
-            if (person.id !== id) {
-              return person;
-            } else {
-              return res;
-            }
-          }))
-          reset();
-          setMessage({
-            text: `${newName} has been updated.`,
-            status: 'success show'
-          })
-          stopNotification()
+      } else if (testPerson[0].name.toLowerCase() === newName.toLowerCase()) {
+        setMessage({
+          text: 'Name must be unique',
+          status: 'error show'
         })
-        .catch(err => {
-          console.error(`ERROR: ${err.message} occurred in updating number`)
-          setMessage({
-            text: `An error occurred when adding ${newName}`,
-            status: 'error show'
-          })
-          stopNotification()
-        })
-    }
+      }
+      reset();
+    
+    // else if (window.confirm(`${newName} already exists, would you like to update the phone number?`)) {
+    //   const id = testPerson[0].id
+    //   phoneServices
+    //     .update(id, personObj)
+    //     .then(res => {
+    //       setList(list.map(person => {
+    //         debugger
+    //         if (person.id !== id) {
+    //           return person;
+    //         } else {
+    //           return res;
+    //         }
+    //       }))
+    //       setPeople(list.map(person => {
+    //         if (person.id !== id) {
+    //           return person;
+    //         } else {
+    //           return res;
+    //         }
+    //       }))
+    //       reset();
+    //       setMessage({
+    //         text: `${newName} has been updated.`,
+    //         status: 'success show'
+    //       })
+    //       stopNotification()
+    //     })
+    //     .catch(err => {
+    //       console.error(`ERROR: ${err.message} occurred in updating number`)
+    //       setMessage({
+    //         text: `An error occurred when adding ${newName}`,
+    //         status: 'error show'
+    //       })
+    //       stopNotification()
+    //     })
+    // }
   }
 
   const deletedPerson = id => {
@@ -143,7 +146,7 @@ const App = () => {
           text:`${deletedPerson[0].name} has been deleted`, 
           status: 'success show'
         })
-        stopNotification()
+        reset();
       })
       .catch(err => {
         console.error(`ERROR: ${err.message} occurred while deleting`)
@@ -151,7 +154,7 @@ const App = () => {
           text: 'User already deleted',
           status: 'error show'
         })
-        stopNotification()
+        reset()
       })
   }
 
