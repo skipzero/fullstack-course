@@ -1,6 +1,23 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+require('dotenv').config()
+
+const mongoose = require('mongoose')
+const password = process.env.MONGODB;
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const url =
+`mongodb+srv://bfalcon510:${password}@fsclusterzed.uh8mopv.mongodb.net/phonebookApp?retryWrites=true&w=majority`
+
+mongoose.set('strictQuery',false)
+mongoose.connect(url)
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
+
+const Note = mongoose.model('Note', noteSchema)
 
 let notes = [
   {

@@ -19,7 +19,7 @@ const connectMongo = async () => {
 
 (async () => {
   await connectMongo();
-  console.log('fired...')
+  
   const personSchema = new mongoose.Schema({
     name: String,
     number: Number

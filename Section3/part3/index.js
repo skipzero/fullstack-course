@@ -3,7 +3,6 @@ const app = express();
 const morgan = require('morgan');
 const cors = require('cors');
 require('dotenv').config()
-console.log('++++', process.env)
 
 // create custom token for morgan logger
 morgan.token('body', (req, res) => {
