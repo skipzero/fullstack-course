@@ -4,8 +4,6 @@ const cors = require('cors')
 require('dotenv').config()
 
 const mongoose = require('mongoose')
-const password = process.env.MONGODB;
-// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
 const url =
 `mongodb+srv://bfalcon510:${password}@fsclusterzed.uh8mopv.mongodb.net/phonebookApp?retryWrites=true&w=majority`
 

@@ -56,7 +56,7 @@ const App = () => {
   const handleNameChange = (e) => {
     const val = e.target.value;
     console.log('Target', val)
-    setNewName(val.trim())
+    setNewName(val)
   }
 
   const handleNumberChange = (e) => {
@@ -67,7 +67,7 @@ const App = () => {
   // add new record
   const addPerson = (e) => {
     e.preventDefault();
-    const testPerson = people.filter(person => person.name.toLowerCase() === newName.toLowerCase());
+    const testPerson = people.filter(person => person.name.toLowerCase() === newName.trim().toLowerCase());
     const personObj = {
       name: newName,
       number: newNumber,
@@ -87,49 +87,26 @@ const App = () => {
           reset();
         })
       } else if (testPerson[0].name.toLowerCase() === newName.toLowerCase()) {
-        setMessage({
-          text: 'Name must be unique',
-          status: 'error show'
-        })
+        if (window.confirm(`Update ${newName}?`)) {
+          const id = testPerson[0].id;
+          debugger;
+          phoneServices
+            .update(id, personObj)
+            .then(res => {
+              console.log('put', res)
+              const newPeople = people.map(person => {
+                return person.id !== id ? person : res
+              })
+              setPeople(newPeople)
+              setList(newPeople)
+              setMessage({
+                text: `${testPerson[0].name} has been updated!`,
+                status: 'success show'
+              })
+            })
+        }
       }
-      reset();
-    
-    // else if (window.confirm(`${newName} already exists, would you like to update the phone number?`)) {
-    //   const id = testPerson[0].id
-    //   phoneServices
-    //     .update(id, personObj)
-    //     .then(res => {
-    //       setList(list.map(person => {
-    //         debugger
-    //         if (person.id !== id) {
-    //           return person;
-    //         } else {
-    //           return res;
-    //         }
-    //       }))
-    //       setPeople(list.map(person => {
-    //         if (person.id !== id) {
-    //           return person;
-    //         } else {
-    //           return res;
-    //         }
-    //       }))
-    //       reset();
-    //       setMessage({
-    //         text: `${newName} has been updated.`,
-    //         status: 'success show'
-    //       })
-    //       stopNotification()
-    //     })
-    //     .catch(err => {
-    //       console.error(`ERROR: ${err.message} occurred in updating number`)
-    //       setMessage({
-    //         text: `An error occurred when adding ${newName}`,
-    //         status: 'error show'
-    //       })
-    //       stopNotification()
-    //     })
-    // }
+    reset();
   }
 
   const deletedPerson = id => {
