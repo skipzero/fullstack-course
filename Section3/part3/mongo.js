@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-if (process.argv.length<3) {
+if (process.argv.length < 3) {
   console.log('give password as argument')
   process.exit(1)
 }
@@ -10,8 +10,7 @@ const password = process.argv[2]
 const url =
   `mongodb+srv://bfalcon510:${password}@fsclusterzed.uh8mopv.mongodb.net/phonebookApp?retryWrites=true&w=majority`
 
-mongoose.set('strictQuery',false)
-mongoose.connect(url)
+mongoose.set('strictQuery', false)
 
 const personSchema = new mongoose.Schema({
   name: String,
@@ -21,6 +20,7 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema)
 
 if (process.argv.length === 3) {
+  mongoose.connect(url)
   Person.find({})
     .then(result => {
       result.forEach(person => {
@@ -36,6 +36,7 @@ if (process.argv.length === 3) {
     number
   })
 
+  mongoose.connect(url)
   person.save().then(result => {
     console.log(`${name} saved to DB...`)
   }).then(
