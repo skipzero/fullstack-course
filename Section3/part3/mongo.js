@@ -22,34 +22,23 @@ mongoose.set('strictQuery', false)
       number: Number
     });
 
-    const Person = mongoose.model('Person', personSchema)
-
-    if (process.argv.length === 3) {
-      mongoose.connect(url)
-      Person.find({})
-        .then(result => {
-          result.forEach(person => {
-            console.log(person)
-          })
-          mongoose.connection.close();
-        })
-    } else {
-      const name = process.argv[3]
-      const number = process.argv[4]
-      const person = new Person({
-        name,
-        number
+  const Person = mongoose.model('Person', personSchema)
+  const name = process.argv[3]
+  const number = process.argv[4]
+  const person = new Person({
+    name,
+    number
+  });
+  
+  if (process.argv.length === 5) {
+    person.save()
+      .then(() => {
+        console.log(`added ${name} number ${number} to phonebook`)
+      })
+      .then(() => {
+        mongoose.connection.close();
       });
-
-      if (process.argv.length === 5) {
-        person.save()
-          .then(() => {
-            console.log(`added ${name} number ${number} to phonebook`)
-          })
-          .then(() => {
-            mongoose.connection.close();
-          });
-      }
+  }
 
       mongoose.connect(url)
       person.save().then(result => {
