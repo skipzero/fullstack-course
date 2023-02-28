@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
-if (process.argv.length<3) {
+if (process.argv.length < 3) {
   console.log('give password as argument')
   process.exit(1)
 }
 
-mongoose.set('strictQuery',false)
+mongoose.set('strictQuery', false)
 
 const password = process.argv[2]
 
@@ -19,7 +19,7 @@ const connectMongo = async () => {
 
 (async () => {
   await connectMongo();
-  
+
   const personSchema = new mongoose.Schema({
     name: String,
     number: Number
@@ -32,7 +32,7 @@ const connectMongo = async () => {
     name,
     number
   });
-  
+
   if (process.argv.length === 5) {
     person.save()
       .then(() => {
