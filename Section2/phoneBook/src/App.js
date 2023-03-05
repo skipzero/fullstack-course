@@ -86,10 +86,17 @@ const App = () => {
           })
           reset();
         })
+        .catch(err => {
+          console.error(`ERROR: ${err} occurred creating record.`)
+          setMessage({
+            text: `${err} occurred creating record.`,
+            status: 'error show'
+          })
+          reset();
+        })
       } else if (testPerson[0].name.toLowerCase() === newName.toLowerCase()) {
         if (window.confirm(`Update ${newName}?`)) {
           const id = testPerson[0].id;
-          debugger;
           phoneServices
             .update(id, personObj)
             .then(res => {

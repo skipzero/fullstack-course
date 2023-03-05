@@ -1,7 +1,7 @@
-const express = require('express');
-const app = express();
-const morgan = require('morgan');
-const cors = require('cors');
+const express = require('express')
+const app = express()
+const morgan = require('morgan')
+const cors = require('cors')
 const Person = require('./models/person')
 
 // create custom token for morgan logger
@@ -14,12 +14,14 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError') {
     return res.status(400).send({error: 'Malformed Id'})
+  } else if (err.name === 'ValidationError') {
+    return res.status(400).json({error: err.message})
   }
   next(err)
 }
 
 // we add our token to the output string
-const output = ':method :url :status :res[content-length] - :response-time ms :body';
+const output = ':method :url :status :res[content-length] - :response-time ms :body'
 
 const logger = (req, res, next) => {
   console.log('Method', req.method)
@@ -36,8 +38,8 @@ const unknownEndpoint = (request, response) => {
 app.use(express.json()) // JSON parser
 app.use(express.static('build')) // our frontend static code
 app.use(morgan(output)) // Logger, using custom token (body)
-app.use(cors()); // CORS Module for cross browser support
-app.use(logger); // our own homespun midedleware for logging...
+app.use(cors()) // CORS Module for cross browser support
+app.use(logger) // our own homespun midedleware for logging...
 
 // get all entries
 app.get('/api/persons', (req, res, next) => {
@@ -45,7 +47,7 @@ app.get('/api/persons', (req, res, next) => {
     .then(result => {
       console.log(result)
       res.json(result)
-      })
+    })
     .catch(err => {
       next(err)
     })
@@ -67,13 +69,11 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 // update entry
 app.put('api/persons/:id', (req, res, next) => {
-  const body = req.body;
-  const person = {
-    name: body.name,
-    number: body.number
-  }
+  const {name, number} = req.body
 
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  Person.findByIdAndUpdate(req.params.id, 
+    {name, number},
+    { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
@@ -82,7 +82,7 @@ app.put('api/persons/:id', (req, res, next) => {
 
 // Add entry
 app.post('/api/persons', (req, res, next) => {
-  const body = req.body;
+  const body = req.body
   console.log('POST', body)
   
   // Throw error if no name or number sent
@@ -112,16 +112,16 @@ app.delete('/api/persons/:id', (req, res, next) => {
       res.status(404).end()
     }
   })
-  .catch(err => {
-    next(err);
-  });
+    .catch(err => {
+      next(err)
+    })
 })
 
 // our info page
 app.get('/info', (req, res, next) =>{
   Person.find({})
     .then(people => {  
-      const entries = people.length;
+      const entries = people.length
       res.send(`Phonebood has entries for ${entries} people <br> ${new Date()}`)
     })
     .catch(err => next(err))
@@ -134,7 +134,7 @@ app.use(errorHandler)
 
 
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
