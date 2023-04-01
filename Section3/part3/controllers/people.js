@@ -1,0 +1,1 @@
+const peopleRouter = require('express').Router()
