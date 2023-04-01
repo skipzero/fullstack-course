@@ -3,6 +3,7 @@ const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
+const logger = require('utils/logger')
 
 // create custom token for morgan logger
 morgan.token('body', (req, res) => {
