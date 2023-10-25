@@ -8,7 +8,7 @@ if (process.argv.length < 3) {
 mongoose.set('strictQuery', false)
 
 const password = process.argv[2]
-
+console.log('TTT', process.argv)
 const url =
   `mongodb+srv://bfalcon510:${password}@fsclusterzed.uh8mopv.mongodb.net/phonebookApp?retryWrites=true&w=majority`
 
