@@ -1,21 +1,21 @@
 const mongoose = require('mongoose')
 
 if (process.argv.length < 3) {
+if (process.argv.length < 3) {
   console.log('give password as argument')
   process.exit(1)
 }
 
 mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', false)
 
 const password = process.argv[2]
+console.log('TTT', process.argv)
 console.log('TTT', process.argv)
 const url =
   `mongodb+srv://bfalcon510:${password}@fsclusterzed.uh8mopv.mongodb.net/phonebookApp?retryWrites=true&w=majority`
 
-const connectMongo = async () => {
-  await mongoose.connect(url, {})
-  return mongoose;
-}
+mongoose.set('strictQuery', false)
 
 (async () => {
   await connectMongo();
@@ -43,19 +43,12 @@ const connectMongo = async () => {
       });
   }
 
-  if (process.argv.length === 3) {
-    Person.find({})
-      .then(result => {
-        console.log('phonebook:')
-        result.forEach(person => {
-          if (person.name !== undefined) {
-            console.log(person.name, person.number)
-          }
-        })
-      })
-      .then(() => {
-        mongoose.connection.close();
-      })
-  }
+      mongoose.connect(url)
+      person.save().then(result => {
+        console.log(`${name} saved to DB...`)
+      }).then(
+        mongoose.connection.close()
+      )
+    }
 
-})()
+  })()
