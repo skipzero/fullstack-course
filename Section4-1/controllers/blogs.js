@@ -1,13 +1,13 @@
-const blogRouter = require("express").Router;
+const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 
-blogRouter.get("/", (req, res) => {
+blogsRouter.get("/", (req, res) => {
   Blog.find({}).then((blogs) => {
     res.json(blogs);
   });
 });
 
-blogRouter.get("/:id", (req, res, next) => {
+blogsRouter.get("/:id", (req, res, next) => {
   Blog.findById(req.params.id)
     .then((blog) => {
       if (blog) {
@@ -19,7 +19,7 @@ blogRouter.get("/:id", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-blogRouter.post("/", (req, res, next) => {
+blogsRouter.post("/", (req, res, next) => {
   const blog = new Blog(req.body);
 
   blog.save().then((result) => {
@@ -27,4 +27,4 @@ blogRouter.post("/", (req, res, next) => {
   });
 });
 
-module.exports = blogRouter;
+module.exports = blogsRouter;
