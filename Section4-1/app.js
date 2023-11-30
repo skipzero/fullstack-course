@@ -1,4 +1,5 @@
-const config = require("./utils/config");
+require("dotenv").config();
+const {MONGODB_URI} = require("./utils/config");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -9,16 +10,16 @@ const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
 
-info(`Connecting to ${config.MONGODB_URI}...`);
+info(`Connecting to ${MONGODB_URI}...`);
 
 app.use("/api/blogs", blogsRouter);
 
 mongoose
-  .connect(config.MONGODB_URI)
+  .connect(MONGODB_URI)
   .then(() => {
     info(`Connected to Mongoose...`);
   })
-  .catch(() => error(`Couldn't connect to Mongoose...`));
+  .catch((err) => error(`Couldn't connect to Mongoose...\n${err}`));
 
 app.use(cors);
 app.use(express.static("dist"));
