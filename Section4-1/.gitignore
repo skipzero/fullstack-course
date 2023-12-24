@@ -1,2 +1,6 @@
+
+.env*
+.flaskenv*
+!.env.project
 .env
-./node_modules
+./no
