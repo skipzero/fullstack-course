@@ -1,5 +1,5 @@
 require("dotenv").config();
-const {MONGODB_URI} = require("./utils/config");
+const { MONGODB_URI } = require("./utils/config");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -25,7 +25,5 @@ app.use(cors);
 app.use(express.static("dist"));
 app.use(express.json());
 app.use(requestLogger);
-
-app.use("api/blogs", blogsRouter);
 
 module.exports = app;
