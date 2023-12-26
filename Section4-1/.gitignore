@@ -4,3 +4,4 @@
 !.env.project
 .env
 ./no
+!.env.vault
