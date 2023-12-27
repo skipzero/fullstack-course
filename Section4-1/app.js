@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { MONGODB_URI } = require("./utils/config");
 const express = require("express");
 const app = express();
