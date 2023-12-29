@@ -1,3 +1,14 @@
+POST http://localhost:5150/api/blogs
+Content-Type: application/json
+
+  {
+    'author': 'skip mcbride',
+    'url': 'http://localhost:....',
+    'title': 'winning....',
+    'likes': 99
+  }
+  ################################
+
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 

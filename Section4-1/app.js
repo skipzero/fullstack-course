@@ -13,13 +13,13 @@ info(`Connecting to ${MONGODB_URI}...`);
 
 app.use("/api/blogs", blogsRouter);
 
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    info(`Connected to Mongoose...`);
-  })
-  .catch((err) => error(`Couldn't connect to Mongoose...\n${err}`));
+mongoose.connect(MONGODB_URI);
+const database = mongoose.connection;
 
+database.on("error", (error) => console.log(error));
+database.once("connected", () => console.log("Connected to DB..."));
+
+app.disable("x-powered-by");
 app.use(cors);
 app.use(express.static("dist"));
 app.use(express.json());
