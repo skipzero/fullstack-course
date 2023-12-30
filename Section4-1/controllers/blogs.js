@@ -26,7 +26,6 @@ blogsRouter.post("/", (req, res) => {
   console.log("BLOG!!!", blog);
   blog.save().then((result) => {
     res.status(201).json(result);
-    console.log(res);
   });
 });
 

@@ -1,6 +1,7 @@
 const { MONGODB_URI } = require("./utils/config");
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const blogsRouter = require("./controllers/blogs");
 const { requestLogger } = require("./utils/middleware");
@@ -9,7 +10,10 @@ const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
 
-info(`Connecting to ${MONGODB_URI}...`);
+info(`Connecting to DB...`);
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/blogs", blogsRouter);
 
