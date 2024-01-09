@@ -1,9 +1,13 @@
 const info = (...args) => {
-  console.info(...args)
+  if (process.env.NODE_ENV !== 'test') {
+    console.info(...args)
+  }
 }
 
 const error = (...args) => {
-  console.error(...args)
+  if (process.env.NODE_ENV !== 'test') {
+    console.error(...args)
+  }
 }
 
 module.exports = {

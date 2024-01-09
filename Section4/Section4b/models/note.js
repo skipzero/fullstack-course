@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const notesSchema = new mongoose.Schema({
-  author: {
+  content: {
     type: String,
   },
-  note: {
-    type: String,
+  important: {
+    type: Boolean,
   }
 })
 
