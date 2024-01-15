@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/api/notes', notesRouter)
 
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, {dbName: 'notes'})
 const database = mongoose.connection
 
 database.on('error', (error) => console.log(error))

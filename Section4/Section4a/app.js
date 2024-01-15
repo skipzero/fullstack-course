@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/api/blogs', blogsRouter)
 
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, {dbName: 'blogs'})
 const database = mongoose.connection
 
 database.on('error', (error) => console.log(error))
