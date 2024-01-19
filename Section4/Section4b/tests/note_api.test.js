@@ -6,16 +6,17 @@ const api = supertest(app)
 
 const Note = require('../models/note')
 const helper = require('./test_helper')
-process.env.MONGODB_URI = `${process.env.MONGODB_URI}testNoteApplication`
 
 beforeEach(async () => {
   await Note.deleteMany({})
+  console.log('cleared...')
 
-  let noteObject = new Note(helper.initialNotes[0])
-  await noteObject.save()
-
-  noteObject = new Note(helper.initialNotes[1])
-  await noteObject.save()
+  helper.initialNotes.forEach(async (note) => {
+    let noteObject = new Note(note)
+    await noteObject.save()
+    console.log('saved...')
+  })
+  console.log('Done...')
 })
 
 test('notes are returned as json', async () => {
@@ -28,7 +29,7 @@ test('notes are returned as json', async () => {
 
 test('all notes are returned', async () => {
   const response = await api.get('/api/notes')
-
+  console.log('RESP', response.body)
   expect(response.body).toHaveLength(helper.initialNotes.length)
 })
 
@@ -88,7 +89,7 @@ test('a specific note can be viewed', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  //const processedNoteToView = JSON.parse(JSON.stringify(noteToView))
+  const processedNoteToView = JSON.parse(JSON.stringify(noteToView))
 
   expect(resultNote.body).toEqual(noteToView)
 })
