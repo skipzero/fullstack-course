@@ -6,6 +6,7 @@ const api = supertest(app)
 
 const Note = require('../models/note')
 const helper = require('./test_helper')
+process.env.MONGODB_URI = `${process.env.MONGODB_URI}testNoteApplication`
 
 beforeEach(async () => {
   await Note.deleteMany({})
@@ -18,6 +19,7 @@ beforeEach(async () => {
 })
 
 test('notes are returned as json', async () => {
+  console.log('TESTS', process.env.MONGODB_URI)
   await api
     .get('/api/notes')
     .expect(200)

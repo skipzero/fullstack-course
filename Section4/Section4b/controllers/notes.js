@@ -1,6 +1,6 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
-console.log('***********',process.env.MONGODB_URI)
+
 notesRouter.get('/', async (req, res) => {
   const notes = await Note.find({})
   res.json(notes)

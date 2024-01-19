@@ -1,4 +1,4 @@
-const { MONGODB_URI, HELLO } = require('./utils/config')
+const { MONGODB_URI} = require('./utils/config')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -10,14 +10,14 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-info('Connecting to DB...', HELLO,  MONGODB_URI )
+info('Connecting to DB...')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/api/notes', notesRouter)
 
-mongoose.connect(MONGODB_URI, {dbName: 'notes'})
+mongoose.connect(MONGODB_URI)
 const database = mongoose.connection
 
 database.on('error', (error) => console.log(error))
