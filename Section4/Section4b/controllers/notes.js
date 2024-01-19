@@ -1,6 +1,6 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
-
+console.log('***********',process.env.MONGODB_URI)
 notesRouter.get('/', async (req, res) => {
   const notes = await Note.find({})
   res.json(notes)
@@ -8,14 +8,12 @@ notesRouter.get('/', async (req, res) => {
 
 notesRouter.post('/', async (req, res, next) => {
   const body = req.body
-
+  
   const note = new Note({
     content: body.content,
     important: body.important || false,
   })
-
-  console.lost('DONT POST@@@@@', body)
-
+  
   if (!note.content) {
     res.status(400)
   }
@@ -42,8 +40,9 @@ notesRouter.get('/:id', async (req, res, next) => {
 })
 
 notesRouter.delete('/:id', async (req, res, next) => {
+  console.log('NOTE', Note, req.params)
   try {
-    await Note.findByIdAndRemove(req.params.id)
+    await Note.findByIdAndDelete(req.params.id)
     res.status(204).end()
   } catch (exception) {
     next(exception)

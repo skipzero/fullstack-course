@@ -1,4 +1,4 @@
-const { MONGODB_URI } = require('./utils/config')
+const { MONGODB_URI, HELLO } = require('./utils/config')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -10,7 +10,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-info('Connecting to DB...')
+info('Connecting to DB...', HELLO,  MONGODB_URI )
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
