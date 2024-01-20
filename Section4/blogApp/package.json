@@ -4,13 +4,14 @@
   "description": "section 4.1/2",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon",
     "build:ui": "rm -rf build && cd ../frontend/ && npm run build && cp -r build ../backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs",
     "lint": "eslint .",
+    "runTest": "NODE_ENV=test node index.js",
     "test": "jest --verbose"
   },
   "repository": {
