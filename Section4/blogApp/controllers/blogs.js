@@ -3,6 +3,7 @@ const Blog = require('../models/blog')
 
 blogsRouter.get('/', (req, res) => {
   console.log('/ get --req', req.body)
+  console.log('+++++++++++++', process.env.MONGODB_URI)
   Blog.find({}).then((blogs) => {
     res.json(blogs)
   })

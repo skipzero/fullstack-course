@@ -25,7 +25,7 @@ beforeEach(async () => {
 })
 
 test('notes are returned as json', async () => {
-  console.log('TESTS', process.env.MONGODB_URI)
+  
   await api
     .get('/api/notes')
     .expect(200)

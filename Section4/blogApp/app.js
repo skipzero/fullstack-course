@@ -1,5 +1,6 @@
 const { MONGODB_URI } = require('./utils/config')
 const express = require('express')
+require('express-async-errors')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -17,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/api/blogs', blogsRouter)
 
-mongoose.connect(MONGODB_URI, {dbName: 'blogs'})
+mongoose.connect(MONGODB_URI)
 const database = mongoose.connection
 
 database.on('error', (error) => console.log(error))
