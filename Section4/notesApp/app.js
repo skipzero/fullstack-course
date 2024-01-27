@@ -9,6 +9,8 @@ const { requestLogger } = require('./utils/middleware')
 const { info, error } = require('./utils/logger')
 const mongoose = require('mongoose')
 
+const usersRoutes = require('./controllers/users')
+
 mongoose.set('strictQuery', false)
 
 info('Connecting to DB...')
@@ -17,6 +19,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/api/notes', notesRouter)
+app.use('/api/users', usersRouter)
 
 mongoose.connect(MONGODB_URI)
 const database = mongoose.connection

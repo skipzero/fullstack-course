@@ -6,8 +6,10 @@ const notesSchema = new mongoose.Schema({
     minlength: 5,
     required: true
   },
-  important: {
-    type: Boolean,
+  important: Boolean,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 })
 
