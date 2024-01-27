@@ -1,5 +1,4 @@
 const Blog = require('../models/blog')
-
 const initialBlogs = [
   {
     author: 'Joe Strummer',
@@ -28,8 +27,14 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const getLastBlogId = async () => {
+  const blogs = await Blog.find({})
+  return blogs[blogs.length - 1].id
+}
+
 module.exports = {
   initialBlogs,
   nonExistingId, 
-  blogsInDb
+  blogsInDb,
+  getLastBlogId
 }

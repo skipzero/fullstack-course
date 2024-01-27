@@ -2,15 +2,13 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 
 blogsRouter.get('/', (req, res) => {
-  console.log('/ get --req', req.body)
-  console.log('+++++++++++++', process.env.MONGODB_URI)
+  
   Blog.find({}).then((blogs) => {
     res.json(blogs)
   })
 })
 
 blogsRouter.get('/:id', (req, res, next) => {
-  console.log('IDget', req.body)
   Blog.findById(req.params.id)
     .then((blog) => {
       if (blog) {
@@ -24,10 +22,32 @@ blogsRouter.get('/:id', (req, res, next) => {
 
 blogsRouter.post('/', (req, res) => {
   const blog = new Blog(req.body)
-  console.log('BLOG!!!', blog)
-  blog.save().then((result) => {
-    res.status(201).json(result)
-  })
+  if (!blog.likes) {
+    blog.likes = 0
+  }
+  if (!blog.url || !blog.title) {
+    res.status(400).end()
+  } else {
+    blog.save().then((result) => {
+      res.status(201).json(result).end()
+    })
+  }
+})
+
+blogsRouter.delete('/:id', async (req, res, next) => {
+  await Blog.findByIdAndDelete(req.params.id)
+  res.status(204).end()
+})
+
+blogsRouter.put('/:id', async (req, res, next) => {
+  const {likes} = req.body
+
+  const result = await Blog.findByIdAndUpdate(req.params.id, {likes}, {new: true})
+    if (result) {
+      res.status(200).json({likes})
+    } else {
+      res.status(404).end()
+    }
 })
 
 // blogsRouter.post('/', async (req, res) => {

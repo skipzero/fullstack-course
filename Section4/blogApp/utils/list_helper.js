@@ -44,7 +44,6 @@ const mostLikes = blogs => {
   const ret = Object.keys(liking).reduce((a,b) => {
     return liking[a] > liking[b] ? a : b
   }, {})
-
   return {
     author: ret,
     likes: liking[ret]
