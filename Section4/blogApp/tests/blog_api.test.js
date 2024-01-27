@@ -134,7 +134,6 @@ describe('Blogs list:',() => {
         }
         await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlog).expect(200)
         const testing = await Blog.find({})
-        console.log('-----------------------', testing)
       })
     })
   })
