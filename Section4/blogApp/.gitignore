@@ -5,3 +5,4 @@
 .env
 ./no
 !.env.vault
+*/**/node_modules/
