@@ -1,17 +1,15 @@
 const mongoose = require('mongoose')
 
-const notesSchema = new mongoose.Schema({
+const noteSchema = new mongoose.Schema({
   content: {
     type: String,
     minlength: 5,
     required: true
   },
-  important: {
-    type: Boolean,
-  }
+  important: Boolean,
 })
 
-notesSchema.set('toJSON', {
+noteSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -19,4 +17,4 @@ notesSchema.set('toJSON', {
   },
 })
 
-module.exports = mongoose.model('Note', notesSchema)
+module.exports = mongoose.model('Note', noteSchema)
